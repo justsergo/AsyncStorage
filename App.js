@@ -1,7 +1,7 @@
 import React from 'react';
-import Car from './components/car';
+import CarWithAsyncStorage from './components/car';
 
 const App = () => {
-  return <Car />;
+  return <CarWithAsyncStorage id={'1GT4BS5'} />;
 };
 export default App;

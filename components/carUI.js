@@ -14,36 +14,37 @@ export default function CarUI({
   clean,
   multiClean,
   multiGet,
-  year,
-  make,
-  model,
-  setYear,
-  setMake,
-  setModel,
+  setData,
+  data,
 }) {
   return (
     <SafeAreaView style={styles.container}>
       <TextInput
         style={styles.textInput}
+        placeholder="id"
+        onChangeText={value => setData({...data, id: value})}
+      />
+      <TextInput
+        style={styles.textInput}
         placeholder="year"
-        onChangeText={value => setYear(value)}
+        onChangeText={value => setData({...data, year: value})}
       />
       <TextInput
         style={styles.textInput}
         placeholder="make"
-        onChangeText={value => setMake(value)}
+        onChangeText={value => setData({...data, make: value})}
       />
       <TextInput
         style={styles.textInput}
         placeholder="model"
-        onChangeText={value => setModel(value)}
+        onChangeText={value => setData({...data, model: value})}
       />
       <TouchableOpacity style={styles.iconSave} onPress={save}>
         <Text>Save</Text>
       </TouchableOpacity>
-      <Text style={styles.text}>Year: {year}</Text>
-      <Text style={styles.text}>Make: {make}</Text>
-      <Text style={styles.text}>Model: {model}</Text>
+      <Text style={styles.text}>Year: {data.year}</Text>
+      <Text style={styles.text}>Make: {data.make}</Text>
+      <Text style={styles.text}>Model: {data.model}</Text>
       <View style={styles.button}>
         <TouchableOpacity style={styles.icon} onPress={get}>
           <Text>Get</Text>

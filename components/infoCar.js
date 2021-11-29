@@ -2,47 +2,19 @@ import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CarUI from './carUI';
 
-export default function Car({id, id2}) {
-  const [year, setYear] = React.useState('no info');
-  const [make, setMake] = React.useState('no info');
-  const [model, setModel] = React.useState('no info');
-  const [dataYear, setDataYear] = React.useState('');
-  const [dataMake, setDataMake] = React.useState('');
-  const [dataModel, setDataModel] = React.useState('');
-
-  /* const [ids, setIds] = React.useState([]);
+export default function Car() {
   const [data, setData] = React.useState({
-    year: '',
-    make: '',
-    model: '',
+    year: 'no year info',
+    make: 'no make info',
+    model: 'no model info',
     id: '',
   });
-
-  <TextInput
-    style={styles.textInput}
-    placeholder="id"
-    onChangeText={value => setData({...data, id: value})}
-  />;
-
-  <TextInput
-    style={styles.textInput}
-    placeholder="make"
-    onChangeText={value => setData({...data, make: value})}
-  />; */
-
-  React.useEffect(() => {
-    getInfo();
-  }, []);
+  const [ids, setIds] = React.useState([]);
 
   const saveInfo = async () => {
+    setIds([data.id]);
     try {
-      /* setIds([...ids, data.id]); */
-      const data = {
-        Year: year,
-        Make: make,
-        Model: model,
-      };
-      await AsyncStorage.setItem(id, JSON.stringify(data));
+      await AsyncStorage.setItem(ids[0], JSON.stringify(data));
     } catch (error) {
       console.log(error);
     }
@@ -50,13 +22,15 @@ export default function Car({id, id2}) {
 
   const getInfo = async () => {
     try {
-      await AsyncStorage.getItem(id).then(value => {
+      await AsyncStorage.getItem(ids[0]).then(value => {
         if (value != null) {
-          const data = JSON.parse(value);
-          setDataYear(data.Year);
-          setDataMake(data.Make);
-          setDataModel(data.Model);
-          /* setData(JSON.parse(value)); */
+          const info = JSON.parse(value);
+          setData({
+            ...data,
+            year: info.year,
+            make: info.make,
+            model: info.model,
+          });
         }
       });
     } catch (e) {
@@ -66,10 +40,13 @@ export default function Car({id, id2}) {
 
   const removeInfo = async () => {
     try {
-      await AsyncStorage.removeItem(id);
-      setDataYear(`key ${id} was cleared`);
-      setDataMake(`key ${id} was cleared`);
-      setDataModel(`key ${id} was cleared`);
+      await AsyncStorage.removeItem(ids[0]);
+      setData({
+        ...data,
+        year: `key ${data.id} was cleared`,
+        make: `key ${data.id} was cleared`,
+        model: `key ${data.id} was cleared`,
+      });
     } catch (e) {
       console.log(error);
     }
@@ -112,12 +89,8 @@ export default function Car({id, id2}) {
       clean={removeInfo}
       multiGet={multiGetInfo}
       multiClean={multiRemoveInfo}
-      year={dataYear}
-      make={dataMake}
-      model={dataModel}
-      setYear={setYear}
-      setMake={setMake}
-      setModel={setModel}
+      data={data}
+      setData={setData}
     />
   );
 }

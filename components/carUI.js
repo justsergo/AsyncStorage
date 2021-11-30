@@ -5,60 +5,75 @@ import {
   View,
   TouchableOpacity,
   TextInput,
+  FlatList,
 } from 'react-native';
 import {styles} from '../styles/styles';
 
-export default function CarUI({
-  save,
-  get,
-  clean,
-  multiClean,
-  multiGet,
-  setData,
-  data,
-}) {
+// eslint-disable-next-line import/prefer-default-export
+export const CarUI = ({setData, data, storage}) => {
+  const textInput = React.createRef;
+
+  const renderItem = ({item}) => (
+    <View>
+      <TouchableOpacity style={styles.icon} onPress={storage.removeInfo}>
+        <Text>Remove</Text>
+      </TouchableOpacity>
+      <Text style={styles.text}>
+        Year:
+        {item.year}
+      </Text>
+      <Text style={styles.text}>
+        Make:
+        {item.make}
+      </Text>
+      <Text style={styles.text}>
+        Model:
+        {item.model}
+      </Text>
+    </View>
+  );
+
+  const clearTextInput = () => {
+    textInput;
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <TextInput
         style={styles.textInput}
-        placeholder="id"
-        onChangeText={value => setData({...data, id: value})}
-      />
-      <TextInput
-        style={styles.textInput}
         placeholder="year"
-        onChangeText={value => setData({...data, year: value})}
+        onChangeText={text => setData({...data, year: text})}
+        ref={textInput}
       />
       <TextInput
         style={styles.textInput}
         placeholder="make"
-        onChangeText={value => setData({...data, make: value})}
+        onChangeText={text => setData({...data, make: text})}
+        ref={textInput}
       />
       <TextInput
         style={styles.textInput}
         placeholder="model"
-        onChangeText={value => setData({...data, model: value})}
+        onChangeText={text => setData({...data, model: text})}
+        ref={textInput}
       />
-      <TouchableOpacity style={styles.iconSave} onPress={save}>
-        <Text>Save</Text>
+      <TouchableOpacity
+        style={styles.iconSave}
+        onPress={(storage.saveInfo, clearTextInput)}>
+        <Text>Save info</Text>
       </TouchableOpacity>
-      <Text style={styles.text}>Year: {data.year}</Text>
-      <Text style={styles.text}>Make: {data.make}</Text>
-      <Text style={styles.text}>Model: {data.model}</Text>
       <View style={styles.button}>
-        <TouchableOpacity style={styles.icon} onPress={get}>
-          <Text>Get</Text>
+        <TouchableOpacity style={styles.icon} onPress={storage.getInfo}>
+          <Text>Get last</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.icon} onPress={clean}>
-          <Text>Remove</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.icon} onPress={multiGet}>
+        <TouchableOpacity style={styles.icon} onPress={storage.multiGetInfo}>
           <Text>Multi Get</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.icon} onPress={multiClean}>
+        <TouchableOpacity style={styles.icon} onPress={storage.multiRemoveInfo}>
           <Text>Multi Remove</Text>
         </TouchableOpacity>
       </View>
+      <FlatList data={data} renderItem={renderItem} />
     </SafeAreaView>
   );
-}
+};

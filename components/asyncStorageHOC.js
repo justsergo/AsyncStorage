@@ -4,7 +4,7 @@ import {Keyboard} from 'react-native';
 
 // eslint-disable-next-line import/prefer-default-export
 export const asyncStorageHOC = Component => {
-  const [data, setData] = React.useState([{}]);
+  const [data, setData] = React.useState([]);
   const [ids, setIds] = React.useState(['1']);
 
   const makeId = lastID => `${lastID}03a`;

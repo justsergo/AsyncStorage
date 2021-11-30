@@ -33,10 +33,6 @@ export const CarUI = ({setData, data, storage}) => {
     </View>
   );
 
-  const clearTextInput = () => {
-    textInput;
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <TextInput
@@ -57,9 +53,7 @@ export const CarUI = ({setData, data, storage}) => {
         onChangeText={text => setData({...data, model: text})}
         ref={textInput}
       />
-      <TouchableOpacity
-        style={styles.iconSave}
-        onPress={(storage.saveInfo, clearTextInput)}>
+      <TouchableOpacity style={styles.iconSave} onPress={storage.saveInfo}>
         <Text>Save info</Text>
       </TouchableOpacity>
       <View style={styles.button}>

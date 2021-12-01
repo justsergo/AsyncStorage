@@ -11,8 +11,6 @@ import {styles} from '../styles/styles';
 
 // eslint-disable-next-line import/prefer-default-export
 export const CarUI = ({setData, data, storage}) => {
-  const textInput = React.createRef;
-
   const renderItem = ({item}) => (
     <View>
       <TouchableOpacity style={styles.icon} onPress={storage.removeInfo}>
@@ -39,19 +37,19 @@ export const CarUI = ({setData, data, storage}) => {
         style={styles.textInput}
         placeholder="year"
         onChangeText={text => setData({...data, year: text})}
-        ref={textInput}
+        value={data.year}
       />
       <TextInput
         style={styles.textInput}
         placeholder="make"
         onChangeText={text => setData({...data, make: text})}
-        ref={textInput}
+        value={data.make}
       />
       <TextInput
         style={styles.textInput}
         placeholder="model"
         onChangeText={text => setData({...data, model: text})}
-        ref={textInput}
+        value={data.model}
       />
       <TouchableOpacity style={styles.iconSave} onPress={storage.saveInfo}>
         <Text>Save info</Text>

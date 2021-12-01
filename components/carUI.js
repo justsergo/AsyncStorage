@@ -10,10 +10,14 @@ import {
 import {styles} from '../styles/styles';
 
 // eslint-disable-next-line import/prefer-default-export
-export const CarUI = ({setData, data, storage}) => {
+export const CarUI = ({setData, data, infoFlatList, storage}) => {
   const renderItem = ({item}) => (
     <View>
-      <TouchableOpacity style={styles.icon} onPress={storage.removeInfo}>
+      <TouchableOpacity
+        style={styles.icon}
+        onPress={() => {
+          storage.removeInfo(item.id);
+        }}>
         <Text>Remove</Text>
       </TouchableOpacity>
       <Text style={styles.text}>
@@ -65,7 +69,7 @@ export const CarUI = ({setData, data, storage}) => {
           <Text>Multi Remove</Text>
         </TouchableOpacity>
       </View>
-      <FlatList data={data} renderItem={renderItem} />
+      <FlatList data={infoFlatList} renderItem={renderItem} />
     </SafeAreaView>
   );
 };

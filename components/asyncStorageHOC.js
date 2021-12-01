@@ -1,59 +1,60 @@
 import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Keyboard} from 'react-native';
+import uuid from 'react-native-uuid';
+import {fromPairs, values, map} from 'lodash';
 
 // eslint-disable-next-line import/prefer-default-export
 export const asyncStorageHOC = Component => {
   const [data, setData] = React.useState({});
-  const [ids, setIds] = React.useState(['1']);
-
-  const makeId = lastID => `${lastID}03a`;
+  const [ids, setIds] = React.useState([]);
+  const [infoFlatList, setInfoFlatList] = React.useState([]);
 
   const saveInfo = async () => {
     try {
-      setIds([...ids, makeId(ids[ids.length - 1])]);
-      await AsyncStorage.setItem(ids[ids.length - 1], JSON.stringify(data));
+      const newId = uuid.v4();
+      await AsyncStorage.setItem(newId, JSON.stringify({...data, id: newId}));
+      setIds([...ids, newId]);
       Keyboard.dismiss();
       setData('');
     } catch (error) {
-      console.log('error');
+      console.log(error);
     }
   };
 
   const getInfo = async () => {
     try {
-      await AsyncStorage.getItem(ids[ids.length - 2]).then(value => {
-        if (value != null) {
-          const info = JSON.parse(value);
-          setData([
-            {
-              ...data,
-              year: info.year,
-              make: info.make,
-              model: info.model,
-            },
-          ]);
-        } else {
-          setData([
-            {
-              ...data,
-              year: 'null',
-              make: 'null',
-              model: 'null',
-            },
-          ]);
-        }
-        ///
-      });
+      const value = await AsyncStorage.getItem(ids[ids.length - 1]);
+      if (value != null) {
+        const info = JSON.parse(value);
+        setInfoFlatList([
+          {
+            ...data,
+            year: info.year,
+            make: info.make,
+            model: info.model,
+          },
+        ]);
+      } else {
+        setInfoFlatList([
+          {
+            ...data,
+            year: 'null',
+            make: 'null',
+            model: 'null',
+          },
+        ]);
+      }
     } catch (e) {
-      console.log('error');
+      console.log(e);
     }
   };
 
-  const removeInfo = async () => {
+  const removeInfo = async id => {
     try {
-      await AsyncStorage.removeItem(ids[ids.length - 2]);
-      setData([
+      await AsyncStorage.removeItem(id);
+      setIds(ids.filter(i => i !== id));
+      setInfoFlatList([
         {
           ...data,
           year: 'last item was cleared',
@@ -62,37 +63,24 @@ export const asyncStorageHOC = Component => {
         },
       ]);
     } catch (e) {
-      console.log('error');
+      console.log(e);
     }
   };
 
   const multiGetInfo = async () => {
     try {
-      await AsyncStorage.multiGet(ids.slice(0, -1)).then(value => {
-        console.log(value);
-        value.map((result, i, store) => {
-          const info = JSON.parse(store[i][1]);
-          console.log(info);
-          setData([
-            {
-              ...data,
-              year: info.year,
-              make: info.make,
-              model: info.model,
-            },
-          ]);
-        });
-      });
+      const value = await AsyncStorage.multiGet(ids);
+      setInfoFlatList(map(values(fromPairs(value)), v => JSON.parse(v)));
     } catch (e) {
-      console.log('error');
+      console.log(e);
     }
   };
 
   const multiRemoveInfo = async () => {
     try {
       await AsyncStorage.clear();
-      setIds(['1', '1']);
-      setData([
+      setIds([]);
+      setInfoFlatList([
         {
           ...data,
           year: 'all items was cleared',
@@ -101,7 +89,7 @@ export const asyncStorageHOC = Component => {
         },
       ]);
     } catch (e) {
-      console.log('error');
+      console.log(e);
     }
   };
 
@@ -109,6 +97,7 @@ export const asyncStorageHOC = Component => {
     <Component
       setData={setData}
       data={data}
+      infoFlatList={infoFlatList}
       storage={{
         saveInfo,
         getInfo,
